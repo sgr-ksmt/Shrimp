@@ -1,0 +1,8 @@
+platform :ios, '8.0'
+
+target 'Demo' do
+  use_frameworks!
+  pod 'Firebase'
+  pod 'Firebase/RemoteConfig'
+  pod 'UIColor_Hex_Swift', '~> 3.0.2'
+end
