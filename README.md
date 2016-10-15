@@ -44,6 +44,8 @@ class ViewController: UIViewController {
 
 ### Define `ConfigKey`
 
+![ss1](Screenshots/ss_1.png)
+
 Define `ConfigKey` as `ConfigyKeys`'s static variable.
 ```swift
 extension ConfigKeys {
@@ -195,7 +197,9 @@ switch Shrimp.shared.config[.testType] {
 ```
 
 #### Example (UIColor)
-!! screenshot  
+
+![ss2](Screenshots/ss_2.png)
+
 Try UIColor <-> String(hex) using [UIColor-Hex-Swift](https://github.com/yeahdongcn/UIColor-Hex-Swift)
 
 - Definition
