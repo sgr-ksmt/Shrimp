@@ -258,7 +258,7 @@ pod 'Firebase'
 pod 'Firebase/RemoteConfig'
 ```
 
-- (2) Download or clone this project. **[Download sources](https://github.com/sgr-ksmt/Shrimp/releases/download/0.1.0/Shrimp.zip)
+- (2) Download or clone this project. **[Download sources](https://github.com/sgr-ksmt/Shrimp/releases/download/0.1.0/Shrimp.zip)**
 - (3) Put `Sources/Shrimp/*.swift` in your project.  
 (need `Shrimp.swift`, `ConfigKey.swift`, `RemoteConfig.swift`)
 
