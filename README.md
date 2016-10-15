@@ -1,3 +1,5 @@
+![Language](https://img.shields.io/badge/language-Swift%203-orange.svg)  
+
 # Shrimp
 Shrimp is a Firebase-RemoteConfig helper library.
 
@@ -29,14 +31,16 @@ class ViewController: UIViewController {
 }
 ```
 
-## Features
-- **Type safe**.
+## :star: Features
+- **Type safe**. :sparkles:
 - Easy to set default value
 - FIRRemoteConfig wrapper.
-- **Custom type available**
+- **Custom type available** :sparkles:
 - Namespace support.(experimental, future function)
 
-## Usage
+---
+
+## :muscle: Usage
 
 ### Define `ConfigKey`
 
@@ -55,7 +59,7 @@ Shrimp.shared.config[.labelText] = 123 // compile error
 let text = Shrimp.shared.config[.labelText] // text is `String`
 ```
 
-#### Before/After
+#### Before/After :eyes:
 
 ```swift
 // Before
@@ -72,7 +76,7 @@ If you create `ConfigKey`, then you can easily set default value to RemoteConfig
 Shrimp.shared.config[.labelText] = "Default Text"
 ```
 
-### Fetch config
+### Fetch config :earth_americas:
 Fetch latest config from firebase.
 
 ```swift
@@ -95,7 +99,7 @@ public enum Result {
 }
 ```
 
-#### Fetch config (with expiratoin)
+#### Fetch config (with expiratoin) :clock3:
 
 - Set expiration to argument.
 
@@ -117,7 +121,7 @@ Shrimp.shared.fetch() { [weak self] result in
 }
 ```
 
-### Set DeveloperMode (if needed)
+### Set DeveloperMode (if needed) : :warning:
 If you use `Developer Mode`, set `Shrimp.shared.developerMode` to true.
 
 ```swift
@@ -129,7 +133,7 @@ remoteConfigSettings.developerModeEnabled = true
 FIRRemoteConfig.remoteConfig().configSettings = remoteConfigSettings
 ```
 
-### Supported types
+### Supported types :four_leaf_clover:
 | Optional variant | Non-optional variant | Default value |
 |:-----------------|:---------------------|:--------------|
 | Int?             | Int                  | 0             |
@@ -142,7 +146,9 @@ FIRRemoteConfig.remoteConfig().configSettings = remoteConfigSettings
 | Data?            | Data                 | Data()        |
 | URL?             | ---                  | nil           |
 
-## Advanced Usage
+---
+
+## :muscle::muscle: Advanced Usage
 ### Custom types
 You can easily use custom type(e.g. `UIColor`, `enum` , etc...) by extending `RemoteConfig` and define **subscript**.
 
@@ -188,7 +194,7 @@ switch Shrimp.shared.config[.testType] {
 }
 ```
 
-### Example (UIColor)
+#### Example (UIColor)
 !! screenshot  
 Try UIColor <-> String(hex) using [UIColor-Hex-Swift](https://github.com/yeahdongcn/UIColor-Hex-Swift)
 
@@ -223,20 +229,20 @@ Shrimp.shared.config[.backgroundColor] = .white
 self.view.backgroundColor = Shrimp.shared.config[.backgroundColor]
 ```
 
-## Demo
+## Demo :ship:
 - (1) Clone this project
 - (2) move to `Demo/`
 - (3) run `pod install`
 - (4) put `GoogleService-Info.plist` to `Demo/`
 - (5) open project and Run!
 
-## Requirements
+## Requirements :traffic_light:
 - Xcode 8.0+
 - Swift 3.0+
 - iOS 8+
 
-## Installation
-### Cocoapods
+## Installation :earth_americas:
+### Cocoapods :construction:
 **Coming Soon.**  
 <br />
 This library can't install via cocoapods because of `Firebase` libraries are static library.  
@@ -244,7 +250,7 @@ If Firebase libraries are available as dynamic library, then I prepare `podspec`
 
 - [Related issue(CocoaPods)](https://github.com/CocoaPods/CocoaPods/issues/5789)
 
-### Manual
+### Manual :arrow_left::arrow_left:
 - (1) Add the following to the pod file, then run `Pods install`
 
 ```ruby
@@ -256,13 +262,14 @@ pod 'Firebase/RemoteConfig'
 - (3) Put `Sources/Shrimp/*.swift` in your project.  
 (need `Shrimp.swift`, `ConfigKey.swift`, `RemoteConfig.swift`)
 
-## Communication
+## Communication :sunny:
 - If you found a bug, please open an issue. :bow:
 - Also, if you have a feature request, please open an issue. :thumbsup:
 - If you want to contribute, submit a pull request.:muscle:
 
-## Special Thanks
+## Special Thanks :bow:
 - [SwiftyUserDefaults](https://github.com/radex/SwiftyUserDefaults)
+- [Firebase](https://firebase.google.com/)
 
 ## License
 **Shrimp** is under BSD license. See the [LICENSE](LICENSE) file for more info.
