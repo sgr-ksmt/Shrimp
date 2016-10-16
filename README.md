@@ -266,6 +266,10 @@ pod 'Firebase/RemoteConfig'
 - (3) Put `Sources/Shrimp/*.swift` in your project.  
 (need `Shrimp.swift`, `ConfigKey.swift`, `RemoteConfig.swift`)
 
+## Todo
+- [ ] UnitTest
+- [ ] support CocoaPods
+
 ## Communication :sunny:
 - If you found a bug, please open an issue. :bow:
 - Also, if you have a feature request, please open an issue. :thumbsup:
