@@ -48,7 +48,7 @@ extension ConfigKeys {
     static let price = ConfigKey<Float>("price")
     static let item = ConfigKey<String>("item")
     static let testType = ConfigKey<SampleType>("test_type")
-    static let notificationKey = ConfigKey<NotificationKey>("notification_key")
+    static let notificationKey = ConfigKey<NotificationKey?>("notification_key")
     static let backgroundColor = ConfigKey<UIColor?>("bg_color")
     static let url = ConfigKey<URL?>("url")
 }
@@ -63,7 +63,7 @@ extension RemoteConfig {
         }
     }
     
-    subscript (key: ConfigKey<NotificationKey>) -> NotificationKey? {
+    subscript (key: ConfigKey<NotificationKey?>) -> NotificationKey? {
         get {
             return string(for: key).flatMap(NotificationKey.init)
         }
@@ -71,13 +71,25 @@ extension RemoteConfig {
             set(key: key, value: newValue?.rawValue)
         }
     }
-    
+
+    subscript (default key: ConfigKey<NotificationKey?>) -> NotificationKey? {
+        get {
+            return defaultString(for: key).flatMap(NotificationKey.init)
+        }
+    }
+
     subscript (key: ConfigKey<UIColor?>) -> UIColor? {
         get {
             return string(for: key).flatMap { UIColor.init($0) }
         }
         set {
             set(key: key, value: newValue?.hexString())
+        }
+    }
+    
+    subscript (default key: ConfigKey<UIColor?>) -> UIColor? {
+        get {
+            return defaultString(for: key).flatMap { UIColor.init($0) }
         }
     }
 }
@@ -111,13 +123,19 @@ class ViewController: UIViewController {
         Shrimp.shared.fetch(withExpirationDuration: 60.0 * 5.0) { [weak self] result in
             switch result {
             case .success(let config):
-                print("[!!!]", config[.quantity]) // as int
-                print("[!!!]", config[.price]) // as Float
-                print("[!!!]", config[.item]) // as String
-                print("[!!!]", config[.testType]) // as enum(Int)
-                print("[!!!]", config[.notificationKey]) // as enum(String)
-                print("[!!!]", config[.backgroundColor]) // as UIColor
-                print("[!!!]", config[.url]) // as URL
+                print("[!!!] quantity:", config[.quantity]) // as int
+                print("[!!!] default quantity:", config[default: .quantity]) // as int
+                print("[!!!] price:", config[.price]) // as Float
+                print("[!!!] default price:", config[default: .price]) // as Float
+                print("[!!!] item:", config[.item]) // as String
+                print("[!!!] default item:", config[default: .item]) // as String
+                print("[!!!] test_type:", config[.testType]) // as enum(Int)
+                print("[!!!] notification_key:", config[.notificationKey]) // as enum(String)
+                print("[!!!] default notification_key:", config[default: .notificationKey]) // as enum(String)
+                print("[!!!] bg_color:", config[.backgroundColor]) // as UIColor
+                print("[!!!] default bg_color:", config[default: .backgroundColor]) // as UIColor
+                print("[!!!] url:", config[.url]) // as URL
+                print("[!!!] default url:", config[default: .url]) // as URL?
                 
                 self?.updateView(with: config)
                 self?.showAlert(with: config)
