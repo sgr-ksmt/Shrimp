@@ -17,7 +17,7 @@ public class Shrimp {
     }
     
     public static let shared = Shrimp()
-    public private(set) lazy var config: RemoteConfig = RemoteConfig(FIRRemoteConfig.remoteConfig())
+    public private(set) lazy var config: RemoteConfig = RemoteConfig()
     public var developerMode = false { didSet { updateConfig() } }
     public var defaultExpirationDuration: TimeInterval = 60 * 60 * 12
     
@@ -36,7 +36,6 @@ public class Shrimp {
         FIRRemoteConfig.remoteConfig().fetch(withExpirationDuration: expire) { [unowned self] status, error in
             if status == .success {
                 FIRRemoteConfig.remoteConfig().activateFetched()
-                self.config._remoteConfig = FIRRemoteConfig.remoteConfig()
                 completion(.success(self.config))
             } else {
                 completion(.failure(error))
@@ -48,6 +47,5 @@ public class Shrimp {
         if let settings = FIRRemoteConfigSettings(developerModeEnabled: self.developerMode) {
             FIRRemoteConfig.remoteConfig().configSettings = settings
         }
-        config._remoteConfig = FIRRemoteConfig.remoteConfig()
     }
 }

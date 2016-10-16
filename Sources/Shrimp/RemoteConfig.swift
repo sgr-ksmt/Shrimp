@@ -13,17 +13,9 @@ import FirebaseRemoteConfig
 
 public class RemoteConfig {
     fileprivate static let defaultNamespace = ""
-    private var defaults: [String: [String: NSObject]] = [:]
+    fileprivate var defaults: [String: [String: NSObject]] = [:]
     
-    var _remoteConfig: FIRRemoteConfig {
-        didSet {
-            updateConfig()
-        }
-    }
-    
-    init(_ remoteConfig: FIRRemoteConfig) {
-        self._remoteConfig = remoteConfig
-    }
+    fileprivate lazy var remoteConfig: FIRRemoteConfig = FIRRemoteConfig.remoteConfig()
     
     public func set<T>(key: ConfigKey<T>, value: NSObject?, namespace: String = defaultNamespace) {
         if defaults[namespace] == nil {
@@ -33,40 +25,45 @@ public class RemoteConfig {
         updateConfig()
     }
     
-    public func remove(key: String, namespace: String = defaultNamespace) {
+    public func removeDefault(forKey key: String, namespace: String = defaultNamespace) {
         defaults[namespace]?[key] = nil
         updateConfig()
     }
     
-    public func removeNamespace(namespace: String) {
+    public func removeDefaults(forNamespace namespace: String) {
         defaults[namespace] = nil
+        updateConfig()
+    }
+    
+    public func removeAllDefaults() {
+        defaults = [:]
         updateConfig()
     }
     
     private func updateConfig() {
         defaults.forEach { key, value in
             if key == RemoteConfig.defaultNamespace {
-                _remoteConfig.setDefaults(value)
+                remoteConfig.setDefaults(value)
             } else {
-                _remoteConfig.setDefaults(value, namespace: key)
+                remoteConfig.setDefaults(value, namespace: key)
             }
         }
     }
     
     public func string<T>(for key: ConfigKey<T>) -> String? {
-        return _remoteConfig.configValue(forKey: key._key).stringValue
+        return remoteConfig.configValue(forKey: key._key).stringValue
     }
     
     public func string<T>(for key: ConfigKey<T>, namespace: String?) -> String? {
-        return _remoteConfig.configValue(forKey: key._key, namespace: namespace).stringValue
+        return remoteConfig.configValue(forKey: key._key, namespace: namespace).stringValue
     }
     
     public func number<T>(for key: ConfigKey<T>) -> NSNumber? {
-        return _remoteConfig.configValue(forKey: key._key).numberValue
+        return remoteConfig.configValue(forKey: key._key).numberValue
     }
     
     public func number<T>(for key: ConfigKey<T>, namespace: String?) -> NSNumber? {
-        return _remoteConfig.configValue(forKey: key._key, namespace: namespace).numberValue
+        return remoteConfig.configValue(forKey: key._key, namespace: namespace).numberValue
     }
     
     public func int<T>(for key: ConfigKey<T>) -> Int? {
@@ -102,19 +99,19 @@ public class RemoteConfig {
     }
     
     public func bool<T>(for key: ConfigKey<T>) -> Bool {
-        return _remoteConfig.configValue(forKey: key._key).boolValue
+        return remoteConfig.configValue(forKey: key._key).boolValue
     }
     
     public func bool<T>(for key: ConfigKey<T>, namespace: String?) -> Bool {
-        return _remoteConfig.configValue(forKey: key._key, namespace: namespace).boolValue
+        return remoteConfig.configValue(forKey: key._key, namespace: namespace).boolValue
     }
     
     public func data<T>(for key: ConfigKey<T>) -> Data {
-        return _remoteConfig.configValue(forKey: key._key).dataValue
+        return remoteConfig.configValue(forKey: key._key).dataValue
     }
     
     public func data<T>(for key: ConfigKey<T>, namespace: String?) -> Data {
-        return _remoteConfig.configValue(forKey: key._key, namespace: namespace).dataValue
+        return remoteConfig.configValue(forKey: key._key, namespace: namespace).dataValue
     }
 }
 
@@ -167,13 +164,23 @@ extension RemoteConfig {
         set { set(key: key, value: newValue, namespace: namespace) }
     }
 
+    public subscript (key: ConfigKey<NSNumber>) -> NSNumber {
+        get { return number(for: key) ?? NSNumber(value: 0) }
+        set { set(key: key, value: newValue) }
+    }
+    
+    public subscript (key: ConfigKey<NSNumber>, namespace: String) -> NSNumber {
+        get { return number(for: key, namespace: namespace) ?? NSNumber(value: 0) }
+        set { set(key: key, value: newValue, namespace: namespace) }
+    }
+
     public subscript (key: ConfigKey<NSNumber?>) -> NSNumber? {
-        get { return number(for: key) ?? 0 }
+        get { return number(for: key) }
         set { set(key: key, value: newValue) }
     }
     
     public subscript (key: ConfigKey<NSNumber?>, namespace: String) -> NSNumber? {
-        get { return number(for: key, namespace: namespace) ?? 0 }
+        get { return number(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
 
@@ -208,12 +215,12 @@ extension RemoteConfig {
     }
     
     public subscript (key: ConfigKey<Float?>) -> Float? {
-        get { return float(for: key) ?? 0 }
+        get { return float(for: key) }
         set { set(key: key, value: newValue) }
     }
     
     public subscript (key: ConfigKey<Float?>, namespace: String) -> Float? {
-        get { return float(for: key, namespace: namespace) ?? 0 }
+        get { return float(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
 
@@ -228,12 +235,12 @@ extension RemoteConfig {
     }
     
     public subscript (key: ConfigKey<Double?>) -> Double? {
-        get { return double(for: key) ?? 0 }
+        get { return double(for: key) }
         set { set(key: key, value: newValue) }
     }
     
     public subscript (key: ConfigKey<Double?>, namespace: String) -> Double? {
-        get { return double(for: key, namespace: namespace) ?? 0 }
+        get { return double(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
 
@@ -248,12 +255,12 @@ extension RemoteConfig {
     }
     
     public subscript (key: ConfigKey<CGFloat?>) -> CGFloat? {
-        get { return cgFloat(for: key) ?? 0 }
+        get { return cgFloat(for: key) }
         set { set(key: key, value: newValue) }
     }
     
     public subscript (key: ConfigKey<CGFloat?>, namespace: String) -> CGFloat? {
-        get { return cgFloat(for: key, namespace: namespace) ?? 0 }
+        get { return cgFloat(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
 
@@ -278,27 +285,202 @@ extension RemoteConfig {
     }
     
     public subscript (key: ConfigKey<Data>) -> Data {
-        get { return data(for: key)}
+        get { return data(for: key) }
         set { set(key: key, value: newValue) }
     }
 
     public subscript (key: ConfigKey<Data>, namespace: String) -> Data {
-        get { return data(for: key, namespace: namespace)}
+        get { return data(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
     
     public subscript (key: ConfigKey<Data?>) -> Data? {
-        get { return data(for: key)}
+        get { return data(for: key) }
         set { set(key: key, value: newValue) }
     }
     
     public subscript (key: ConfigKey<Data?>, namespace: String) -> Data? {
-        get { return data(for: key, namespace: namespace)}
+        get { return data(for: key, namespace: namespace) }
         set { set(key: key, value: newValue, namespace: namespace) }
     }
     
     public subscript (key: ConfigKey<URL?>) -> URL? {
         get { return string(for: key).flatMap { URL.init(string: $0) } }
         set { set(key: key, value: newValue?.absoluteString) }
+    }
+}
+
+// default value
+extension RemoteConfig {
+    public func defaultString<T>(for key: ConfigKey<T>, namespace: String? = nil) -> String? {
+        return defaults[namespace ?? RemoteConfig.defaultNamespace]?[key._key] as? String
+        //        not work yet (bug?)
+        //        return remoteConfig.defaultValue(forKey: key._key, namespace: namespace)?.stringValue
+    }
+    
+    public func defaultNumber<T>(for key: ConfigKey<T>, namespace: String? = nil) -> NSNumber? {
+        return defaults[namespace ?? RemoteConfig.defaultNamespace]?[key._key] as? NSNumber
+        //        not work yet (bug?)
+        //        return remoteConfig.defaultValue(forKey: key._key, namespace: namespace)?.numberValue
+    }
+    
+    public func defaultInt<T>(for key: ConfigKey<T>, namespace: String? = nil) -> Int? {
+        return defaultNumber(for: key, namespace: namespace)?.intValue
+    }
+    
+    public func defaultFloat<T>(for key: ConfigKey<T>, namespace: String? = nil) -> Float? {
+        return defaultNumber(for: key, namespace: namespace)?.floatValue
+    }
+    
+    public func defaultDouble<T>(for key: ConfigKey<T>, namespace: String? = nil) -> Double? {
+        return defaultNumber(for: key, namespace: namespace)?.doubleValue
+    }
+    
+    public func defaultCGFloat<T>(for key: ConfigKey<T>, namespace: String? = nil) -> CGFloat? {
+        return defaultDouble(for: key, namespace: namespace).map { CGFloat.init($0) }
+    }
+    
+    public func defaultBool<T>(for key: ConfigKey<T>, namespace: String? = nil) -> Bool? {
+        return defaults[namespace ?? RemoteConfig.defaultNamespace]?[key._key] as? Bool
+        //        not work yet (bug?)
+        //        return remoteConfig.defaultValue(forKey: key._key, namespace: namespace)?.boolValue
+    }
+    
+    public func defaultData<T>(for key: ConfigKey<T>, namespace: String? = nil) -> Data? {
+        return defaults[namespace ?? RemoteConfig.defaultNamespace]?[key._key] as? Data
+        //        not work yet (bug?)
+        //        return remoteConfig.defaultValue(forKey: key._key, namespace: namespace)?.dataValue
+    }
+    
+    public subscript (default key: ConfigKey<String>) -> String {
+        get { return defaultString(for: key) ?? "" }
+    }
+    
+    public subscript (default key: ConfigKey<String>, namespace: String) -> String {
+        get { return defaultString(for: key, namespace: namespace) ?? "" }
+    }
+    
+    public subscript (default key: ConfigKey<String?>) -> String? {
+        get { return defaultString(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<String?>, namespace: String) -> String? {
+        get { return defaultString(for: key, namespace: namespace) }
+    }
+
+    public subscript (default key: ConfigKey<NSNumber>) -> NSNumber {
+        get { return defaultNumber(for: key) ?? NSNumber(value: 0) }
+    }
+    
+    public subscript (default key: ConfigKey<NSNumber>, namespace: String) -> NSNumber {
+        get { return defaultNumber(for: key, namespace: namespace) ?? NSNumber(value: 0) }
+    }
+
+    public subscript (default key: ConfigKey<NSNumber?>) -> NSNumber? {
+        get { return defaultNumber(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<NSNumber?>, namespace: String) -> NSNumber? {
+        get { return defaultNumber(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<Int>) -> Int {
+        get { return defaultInt(for: key) ?? 0 }
+    }
+    
+    public subscript (default key: ConfigKey<Int>, namespace: String) -> Int {
+        get { return defaultInt(for: key, namespace: namespace) ?? 0 }
+    }
+    
+    public subscript (default key: ConfigKey<Int?>) -> Int? {
+        get { return defaultInt(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<Int?>, namespace: String) -> Int? {
+        get { return defaultInt(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<Float>) -> Float {
+        get { return defaultFloat(for: key) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<Float>, namespace: String) -> Float {
+        get { return defaultFloat(for: key, namespace: namespace) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<Float?>) -> Float? {
+        get { return defaultFloat(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<Float?>, namespace: String) -> Float? {
+        get { return defaultFloat(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<Double>) -> Double {
+        get { return defaultDouble(for: key) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<Double>, namespace: String) -> Double {
+        get { return defaultDouble(for: key, namespace: namespace) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<Double?>) -> Double? {
+        get { return defaultDouble(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<Double?>, namespace: String) -> Double? {
+        get { return defaultDouble(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<CGFloat>) -> CGFloat {
+        get { return defaultCGFloat(for: key) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<CGFloat>, namespace: String) -> CGFloat {
+        get { return defaultCGFloat(for: key, namespace: namespace) ?? 0.0 }
+    }
+    
+    public subscript (default key: ConfigKey<CGFloat?>) -> CGFloat? {
+        get { return defaultCGFloat(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<CGFloat?>, namespace: String) -> CGFloat? {
+        get { return defaultCGFloat(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<Bool>) -> Bool {
+        get { return defaultBool(for: key) ?? false }
+    }
+    
+    public subscript (default key: ConfigKey<Bool>, namespace: String) -> Bool {
+        get { return defaultBool(for: key, namespace: namespace) ?? false }
+    }
+    
+    public subscript (default key: ConfigKey<Bool?>) -> Bool? {
+        get { return defaultBool(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<Bool?>, namespace: String) -> Bool? {
+        get { return defaultBool(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<Data>) -> Data {
+        get { return defaultData(for: key) ?? Data() }
+    }
+    
+    public subscript (default key: ConfigKey<Data>, namespace: String) -> Data {
+        get { return defaultData(for: key, namespace: namespace) ?? Data() }
+    }
+    
+    public subscript (default key: ConfigKey<Data?>) -> Data? {
+        get { return defaultData(for: key) }
+    }
+    
+    public subscript (default key: ConfigKey<Data?>, namespace: String) -> Data? {
+        get { return defaultData(for: key, namespace: namespace) }
+    }
+    
+    public subscript (default key: ConfigKey<URL?>) -> URL? {
+        get { return defaultString(for: key).flatMap { URL.init(string: $0) } }
     }
 }
