@@ -25,17 +25,17 @@ public class RemoteConfig {
         updateConfig()
     }
     
-    public func remove(key: String, namespace: String = defaultNamespace) {
+    public func removeDefault(forKey key: String, namespace: String = defaultNamespace) {
         defaults[namespace]?[key] = nil
         updateConfig()
     }
     
-    public func removeNamespace(namespace: String) {
+    public func removeDefaults(forNamespace namespace: String) {
         defaults[namespace] = nil
         updateConfig()
     }
     
-    public func removeAll() {
+    public func removeAllDefaults() {
         defaults = [:]
         updateConfig()
     }
