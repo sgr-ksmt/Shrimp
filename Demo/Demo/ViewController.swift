@@ -50,7 +50,7 @@ extension ConfigKeys {
     static let testType = ConfigKey<SampleType>("test_type")
     static let notificationKey = ConfigKey<NotificationKey?>("notification_key")
     static let backgroundColor = ConfigKey<UIColor?>("bg_color")
-    static let url = ConfigKey<URL?>("url")
+    static let url = ConfigKey<NSURL?>("url")
 }
 
 extension RemoteConfig {
@@ -80,16 +80,16 @@ extension RemoteConfig {
 
     subscript (key: ConfigKey<UIColor?>) -> UIColor? {
         get {
-            return string(for: key).flatMap { UIColor.init($0) }
+            return string(for: key).flatMap { UIColor.init(rgba: $0) }
         }
         set {
-            set(key: key, value: newValue?.hexString())
+            set(key: key, value: newValue?.hexString(true))
         }
     }
     
     subscript (default key: ConfigKey<UIColor?>) -> UIColor? {
         get {
-            return defaultString(for: key).flatMap { UIColor.init($0) }
+            return defaultString(for: key).flatMap { UIColor.init(rgba: $0) }
         }
     }
 }
@@ -98,7 +98,7 @@ class ViewController: UIViewController {
     @IBOutlet private weak var label: UILabel! {
         didSet {
             label.layer.borderWidth = 1.0
-            label.layer.borderColor = UIColor.black.cgColor
+            label.layer.borderColor = UIColor.blackColor().CGColor
         }
     }
     override func viewDidLoad() {
@@ -111,7 +111,7 @@ class ViewController: UIViewController {
         Shrimp.shared.config[.quantity] = 0
         Shrimp.shared.config[.item] = "Apple"
         Shrimp.shared.config[.testType] = .none
-        Shrimp.shared.config[.backgroundColor] = UIColor.white
+        Shrimp.shared.config[.backgroundColor] = UIColor.whiteColor()
         
         self.view.backgroundColor = Shrimp.shared.config[.backgroundColor]
         self.label.text = " "
@@ -160,9 +160,9 @@ class ViewController: UIViewController {
     
     private func showAlert(with config: RemoteConfig) {
         if let notification = config[.notificationKey] {
-            let alert = UIAlertController(title: notification.title, message: notification.message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: notification.title, message: notification.message, preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     
@@ -177,7 +177,7 @@ class ViewController: UIViewController {
     
     @IBAction func openURLButtonDidTap(_: UIButton!) {
         if let url = Shrimp.shared.config[.url] {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            UIApplication.sharedApplication().openURL(url, options: [:], completionHandler: nil)
         }
     }
 

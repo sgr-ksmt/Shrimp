@@ -9,7 +9,7 @@
 import Foundation
 
 public class ConfigKeys {
-    fileprivate init() {}
+    private init() {}
 }
 
 public class ConfigKey<T>: ConfigKeys {
@@ -21,11 +21,11 @@ public class ConfigKey<T>: ConfigKeys {
 }
 
 extension ConfigKey: Hashable {
-    public static func == (lhs: ConfigKey, rhs: ConfigKey) -> Bool {
-        return lhs._key == rhs._key
-    }
-    
     public var hashValue: Int {
         return _key.hashValue
     }
+}
+
+public func == <Value>(lhs: ConfigKey<Value>, rhs: ConfigKey<Value>) -> Bool {
+    return lhs._key == rhs._key
 }

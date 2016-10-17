@@ -13,13 +13,13 @@ import FirebaseRemoteConfig
 public class Shrimp {
     public enum Result {
         case success(RemoteConfig)
-        case failure(Error?)
+        case failure(NSError?)
     }
     
     public static let shared = Shrimp()
     public private(set) lazy var config: RemoteConfig = RemoteConfig()
     public var developerMode = false { didSet { updateConfig() } }
-    public var defaultExpirationDuration: TimeInterval = 60 * 60 * 12
+    public var defaultExpirationDuration: NSTimeInterval = 60 * 60 * 12
     
     public var isDeveloperMode: Bool {
         return FIRRemoteConfig.remoteConfig().configSettings.isDeveloperModeEnabled
@@ -31,10 +31,10 @@ public class Shrimp {
         updateConfig()
     }
     
-    public func fetch(withExpirationDuration expirationDuration: TimeInterval? = nil, completion: @escaping (Result) -> Void) {
+    public func fetch(withExpirationDuration expirationDuration: NSTimeInterval? = nil, completion: (Result) -> Void) {
         let expire = expirationDuration ?? defaultExpirationDuration
-        FIRRemoteConfig.remoteConfig().fetch(withExpirationDuration: expire) { [unowned self] status, error in
-            if status == .success {
+        FIRRemoteConfig.remoteConfig().fetchWithExpirationDuration(expire) { [unowned self] status, error in
+            if status == .Success {
                 FIRRemoteConfig.remoteConfig().activateFetched()
                 completion(.success(self.config))
             } else {

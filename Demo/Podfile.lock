@@ -31,12 +31,12 @@ PODS:
   - GoogleSymbolUtilities (1.1.2)
   - GoogleUtilities (1.3.2):
     - GoogleSymbolUtilities (~> 1.1)
-  - UIColor_Hex_Swift (3.0.2)
+  - UIColor_Hex_Swift (2.3)
 
 DEPENDENCIES:
   - Firebase
   - Firebase/RemoteConfig
-  - UIColor_Hex_Swift (~> 3.0.2)
+  - UIColor_Hex_Swift (~> 2.3)
 
 SPEC CHECKSUMS:
   Firebase: be473484f0d515e72ffd04acf22f981773c23e58
@@ -48,8 +48,8 @@ SPEC CHECKSUMS:
   GoogleIPhoneUtilities: 63f25e93a3ddcb66884d182aab3a660d98f1479b
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleUtilities: 8bbc733218aad26306f9d4a253823986110e3358
-  UIColor_Hex_Swift: 95f718452092a3efc8a827dffd2c04d3237be02d
+  UIColor_Hex_Swift: 18bb48e9f1ed16c87f4ea7bf7e03853b43030812
 
-PODFILE CHECKSUM: 16aec0b8208b9fba76f4f84c68078812cdc7f2a8
+PODFILE CHECKSUM: f545e70b2ffc73f144cda465bbb8685469b14888
 
 COCOAPODS: 1.1.0.rc.2

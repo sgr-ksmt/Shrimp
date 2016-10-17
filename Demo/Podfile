@@ -4,5 +4,5 @@ target 'Demo' do
   use_frameworks!
   pod 'Firebase'
   pod 'Firebase/RemoteConfig'
-  pod 'UIColor_Hex_Swift', '~> 3.0.2'
+  pod 'UIColor_Hex_Swift', '~> 2.3'
 end
